@@ -24,6 +24,7 @@ bool isValid(std::string s){
 /****Default Constructor****/
 Superlong::Superlong(){
 	//std::cout << "created object " << this << std::endl;
+	isneg = false;
 	val = (char*)malloc(sizeof(char)*MAX_SIZE);
 	for(int i = 0; i < MAX_SIZE; i++){
 		val[i] = '0';
@@ -204,25 +205,34 @@ const Superlong Superlong::operator-(const Superlong& rhs){
 	}
 	return result;
 }
-const Superlong multHelper(const Superlong& lhs, const Superlong& rhs){
+int multChar(const char lhs, const char rhs){
+	return (lhs-'0')*(rhs-'0');
+}
+Superlong multHelper(const Superlong& bignum, const Superlong& smallnum){
+	Superlong total;
 	Superlong result;
-	for(Superlong i("0"); i < rhs; ++i){
-		result = result + lhs;
+	int big_size = bignum.getSize();
+	int small_size = smallnum.getSize();
+	for(int i = 0; i < small_size; i++){
+		int carry = 0;
+		for(int j = 0; j < big_size; j++){
+			int multRes = multChar(smallnum.val[i], bignum.val[j]) + carry;
+			result.val[j+i] = (multRes % 10) + '0';
+			carry = multRes /10;
+		}
+		result.val[big_size+i] = carry + '0';
+		total = total + result;
+		result = "0";
 	}
-	return result;
+	return total;
 }
 const Superlong Superlong::operator*(const Superlong& rhs){
 	Superlong result;
-	if(rhs == "0" || *this == "0"){
-		return result;
+	if(*this > rhs){
+		result = multHelper(*this, rhs);
 	}
-	if(rhs == "1"){
-		return *this;
-	}else if(*this == "1"){
-		return rhs;
-	}
-	for(Superlong i("0"); i < rhs; ++i){
-		result = result + *this;
+	else{
+		result = multHelper(rhs, *this);
 	}
 	return result;
 }

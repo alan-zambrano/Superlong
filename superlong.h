@@ -32,5 +32,7 @@ class Superlong{
 	const Superlong operator*(const Superlong& rhs);
 	/**************Stream**************/
 	friend std::ostream& operator<<(std::ostream& os, const Superlong& obj);
+	/**************Helper**************/
+	friend Superlong multHelper(const Superlong& lhs, const Superlong& rhs);
 };
 #endif
